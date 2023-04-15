@@ -3,11 +3,28 @@
 {% block content %}
 
 <div id="map" style="height:500px; width: 100%;">
-    HELLO
+    
 </div>
+
+{{ vehicles|json_script:"vehicle-json" }}
 
 {% endblock %}
 
 {% block scripts %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let map = createMap([45.5, -90], 5);
+        let vehicles = JSON.parse(document.getElementById('vehicle-json').textContent)
+        
+        let markerFeatureGroup = L.featureGroup().addTo(map);
+
+        for (let vehicle of vehicles) {
+            L.marker([vehicle.latitude, vehicle.longitude]).addTo(markerFeatureGroup);
+        }
+
+        setInterval(() => updateMarkers(markerFeatureGroup), 5000)
+    });
+</script>
 
 {% endblock %}
